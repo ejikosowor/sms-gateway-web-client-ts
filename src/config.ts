@@ -13,7 +13,7 @@ export interface GatewayConfig {
     webhookUrl: string;
 }
 
-const httpPort = Number(process.env.HTTP__PORT) || Number(process.env.PORT) || 3000;
+const httpPort = Number(process.env.HTTP__PORT) || Number(process.env.PORT) || 3030;
 
 export const http: HttpConfig = {
     port: httpPort,

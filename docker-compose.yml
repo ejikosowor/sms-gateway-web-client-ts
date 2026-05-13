@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  sms-gateway-client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3030:3030"
+    environment:
+      - NODE_ENV=production
+      - HTTP__PORT=3030
+      - HTTP__SESSION_SECRET=${HTTP__SESSION_SECRET}
+      - GATEWAY__URL=${GATEWAY__URL}
+      - GATEWAY__WEBHOOK_URL=${GATEWAY__WEBHOOK_URL}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3030/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

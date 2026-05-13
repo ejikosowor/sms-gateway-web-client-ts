@@ -31,8 +31,8 @@ COPY ./static ./static
 # Copy built assets from the build stage
 COPY --from=build-stage /usr/src/app/dist ./dist
 
-# Your application binds to port 3000, make sure the container exposes this port
-EXPOSE 3000
+# Your application binds to port 3030, make sure the container exposes this port
+EXPOSE 3030
 
 # The command to run your application
 CMD [ "node", "dist/index.js" ]
