@@ -59,15 +59,19 @@ export const register = (io: Server) => {
             try {
                 await GatewayService.logout(req.session.id);
 
-                req.session.destroy((err) => {
-                    if (err) {
-                        console.error(err);
-                    }
+                await new Promise<void>((resolve) => {
+                    req.session.destroy((err) => {
+                        if (err) {
+                            console.error(err);
+                        }
+
+                        resolve();
+                    });
                 });
             } catch (e) {
                 console.error(e);
             }
-            socket.emit('login:fail');
+            socket.emit('logout:success');
         });
 
         console.log(`user connected: ${req.session.id}`);

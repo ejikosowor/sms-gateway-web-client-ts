@@ -21,6 +21,13 @@
             overflow-y: scroll;
             border: 1px solid #ccc;
         }
+
+        .manager-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
     </style>
 </head>
 
@@ -49,6 +56,10 @@
         </div>
 
         <div id="managerView">
+            <div class="manager-toolbar mb-3">
+                <h5 class="mb-0">Messages</h5>
+                <button type="button" id="logoutButton" class="btn btn-outline-danger btn-sm">Logout</button>
+            </div>
             <div id="messages" class="mb-3"></div>
             <form id="sendMessageForm">
                 <div class="form-group">
@@ -76,6 +87,7 @@
             const socket = io(); // Connect to server
             const loginForm = document.getElementById('loginForm');
             const sendMessageForm = document.getElementById('sendMessageForm');
+            const logoutButton = document.getElementById('logoutButton');
             const loginView = document.getElementById('loginView');
             const managerView = document.getElementById('managerView');
             const loginError = document.getElementById('loginError');
@@ -110,13 +122,26 @@
                 document.getElementById('message').value = ''; // Clear input after send
             });
 
+            logoutButton.addEventListener('click', function () {
+                showView(loadingIndicator);
+                socket.emit('logout');
+            });
+
             socket.on('login:success', function () {
+                loginForm.reset();
                 showView(managerView);
             });
 
             socket.on('login:fail', function () {
                 showView(loginView);
                 $(loginError).show();
+            });
+
+            socket.on('logout:success', function () {
+                loginForm.reset();
+                sendMessageForm.reset();
+                messagesDiv.innerHTML = '';
+                showView(loginView);
             });
 
             socket.on('sms:received', function (data) {

@@ -140,6 +140,7 @@ The application uses Socket.IO for real-time communication between client and se
 3. Client sends `sms:send` to send messages
 4. Server sends `sms:received` for incoming messages
 5. Client sends `logout` to terminate session
+6. Server responds with `logout:success`
 
 ### Client Events
 - `login` - Authentication attempt
@@ -150,6 +151,7 @@ The application uses Socket.IO for real-time communication between client and se
 - `sms:received` - Incoming SMS notification
 - `login:success` - Successful authentication
 - `login:fail` - Authentication failure
+- `logout:success` - Successful logout
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
