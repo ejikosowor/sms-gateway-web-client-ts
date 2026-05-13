@@ -55,6 +55,19 @@ export const register = (io: Server) => {
             }
         });
 
+        socket.on('sms:send:bulk', async (data, callback) => {
+            try {
+                await GatewayService.sendBulk(req.session.id, data.phoneNumbers, data.message);
+                callback({ success: true });
+            } catch (error: Error | any) {
+                callback({ success: false, message: error.message });
+
+                if (error instanceof UnauthorizedError) {
+                    socket.emit('login:fail', { message: error.message });
+                }
+            }
+        });
+
         socket.on('logout', async () => {
             try {
                 await GatewayService.logout(req.session.id);

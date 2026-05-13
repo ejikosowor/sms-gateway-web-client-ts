@@ -54,6 +54,15 @@ const send = async (sessionId: string, phoneNumber: string, message: string) => 
     await api.sendMessage(phoneNumber, message);
 }
 
+const sendBulk = async (sessionId: string, phoneNumbers: string[], message: string) => {
+    const api = sessions[sessionId];
+    if (!api) {
+        throw new Error(`Session ${sessionId} not found`);
+    }
+
+    await api.sendMessageToMultiple(phoneNumbers, message);
+}
+
 const logout = async (sessionId: string) => {
     const api = sessions[sessionId];
     if (api) {
@@ -62,4 +71,4 @@ const logout = async (sessionId: string) => {
     delete sessions[sessionId];
 }
 
-export const GatewayService = { login, logout, send, subscribe, processWebhook }
+export const GatewayService = { login, logout, send, sendBulk, subscribe, processWebhook }

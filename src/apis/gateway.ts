@@ -46,6 +46,16 @@ export class GatewayApi {
         });
     }
 
+    async sendMessageToMultiple(phoneNumbers: string[], message: string) {
+        await this.fetch("message", {
+            method: "POST",
+            body: JSON.stringify({
+                phoneNumbers,
+                message,
+            }),
+        });
+    }
+
     private async fetch(path: string, init: RequestInit) {
         const response = await fetch(`${this.url}/${path}`, {
             ...init,
