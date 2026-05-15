@@ -44,7 +44,7 @@ export const register = (io: Server) => {
 
         socket.on('sms:send', async (data, callback) => {
             try {
-                await GatewayService.send(req.session.id, data.phoneNumber, data.message);
+                await GatewayService.send(req.session.id, data.phoneNumber, data.message, Number(data.simNumber) || 1);
                 callback({ success: true });
             } catch (error: Error | any) {
                 callback({ success: false, message: error.message });
@@ -57,7 +57,7 @@ export const register = (io: Server) => {
 
         socket.on('sms:send:bulk', async (data, callback) => {
             try {
-                await GatewayService.sendBulk(req.session.id, data.phoneNumbers, data.message);
+                await GatewayService.sendBulk(req.session.id, data.phoneNumbers, data.message, Number(data.simNumber) || 1);
                 callback({ success: true });
             } catch (error: Error | any) {
                 callback({ success: false, message: error.message });

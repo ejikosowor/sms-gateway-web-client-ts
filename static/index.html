@@ -109,6 +109,16 @@
                 <h5 class="mb-0">Messages</h5>
                 <button type="button" id="logoutButton" class="btn btn-outline-danger btn-sm">Logout</button>
             </div>
+
+            <div class="form-group">
+                <label for="simNumber">SIM Card</label>
+                <select class="form-control" id="simNumber" name="simNumber">
+                    <option value="1" selected>SIM 1</option>
+                    <option value="2">SIM 2</option>
+                </select>
+                <small class="form-text text-muted">Choose which SIM card to use for outgoing SMS.</small>
+            </div>
+
             <div id="messages" class="mb-3"></div>
             
             <div class="tab-buttons">
@@ -169,6 +179,7 @@
             const loginForm = document.getElementById('loginForm');
             const sendMessageForm = document.getElementById('sendMessageForm');
             const logoutButton = document.getElementById('logoutButton');
+            const simNumberSelect = document.getElementById('simNumber');
             const loginView = document.getElementById('loginView');
             const managerView = document.getElementById('managerView');
             const loginError = document.getElementById('loginError');
@@ -293,6 +304,7 @@
 
                 const defaultMessage = bulkMessage.value;
                 const phoneNumbers = parsedCsvData.map(row => row.phoneNumber);
+                const simNumber = Number(simNumberSelect.value) || 1;
 
                 // Use individual messages if available, otherwise use default message
                 const hasIndividualMessages = parsedCsvData.some(row => row.message);
@@ -312,7 +324,7 @@
 
                         socket.emit(
                             'sms:send',
-                            { phoneNumber: row.phoneNumber, message: message },
+                            { phoneNumber: row.phoneNumber, message: message, simNumber: simNumber },
                             function (data) {
                                 completed++;
                                 if (!data.success) {
@@ -342,7 +354,7 @@
                     showView(loadingIndicator);
                     socket.emit(
                         'sms:send:bulk',
-                        { phoneNumbers: phoneNumbers, message: defaultMessage },
+                        { phoneNumbers: phoneNumbers, message: defaultMessage, simNumber: simNumber },
                         function (data) {
                             showView(managerView);
                             if (data.success) {
@@ -368,10 +380,12 @@
                 e.preventDefault();
 
                 const formData = new FormData(sendMessageForm);
+                const payload = Object.fromEntries(formData);
+                payload.simNumber = Number(simNumberSelect.value) || 1;
 
                 socket.emit(
                     'sms:send',
-                    Object.fromEntries(formData),
+                    payload,
                     function (data) {
                         if (!data.success) {
                             alert(data.message);
